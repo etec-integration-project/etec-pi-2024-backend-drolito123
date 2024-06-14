@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: shirtdb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_HOST: mysql
+      DATABASE_USER: user
+      DATABASE_PASSWORD: userpassword
+      DATABASE_NAME: shirtdb
+    depends_on:
+      - mysql
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3001:3000"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
