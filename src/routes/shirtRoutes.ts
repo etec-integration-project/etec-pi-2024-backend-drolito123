@@ -1,29 +1,28 @@
 import { Router } from 'express';
-import { pool } from '../db';
-import { ResultSetHeader } from 'mysql2';
+import { getAllShirts, getShirtById } from '../db';
 
 const router = Router();
 
-router.get('/shirts', async (req, res) => {
-  try {
-    const [rows] = await pool.execute('SELECT * FROM shirts');
-    res.json(rows);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching shirts', error });
-  }
+router.get('/', async (req, res) => {
+    try {
+        const shirts = await getAllShirts();
+        res.json(shirts);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener las remeras' });
+    }
 });
 
-router.post('/shirts', async (req, res) => {
-  const { color, model, price } = req.body;
-  try {
-    const [result] = await pool.execute<ResultSetHeader>(
-      'INSERT INTO shirts (color, model, price) VALUES (?, ?, ?)',
-      [color, model, price]
-    );
-    res.status(201).json({ id: result.insertId, color, model, price });
-  } catch (error) {
-    res.status(500).json({ message: 'Error adding shirt', error });
-  }
+router.get('/:id', async (req, res) => {
+    try {
+        const shirt = await getShirtById(parseInt(req.params.id));
+        if (shirt) {
+            res.json(shirt);
+        } else {
+            res.status(404).json({ error: 'Remera no encontrada' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener la remera' });
+    }
 });
 
 export default router;
