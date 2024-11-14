@@ -1,5 +1,6 @@
 import mysql, { RowDataPacket } from 'mysql2/promise';
 
+// Configuración de la conexión a la base de datos
 export const pool = mysql.createPool({
   host: 'mysql_container',
   user: 'user',
@@ -10,110 +11,71 @@ export const pool = mysql.createPool({
   queueLimit: 0
 });
 
-interface User extends RowDataPacket {
-  id: number;
-  username: string;
-  password: string;
-}
-
-interface Short extends RowDataPacket {
-  id: number;
-  name: string;
-  size: string;
-  color: string;
-  price: number;
-}
-
-interface Campera extends RowDataPacket {
-  id: number;
-  name: string;
-  size: string;
-  color: string;
-  price: number;
-}
-
+// Interface para el modelo Shirt
 interface Shirt extends RowDataPacket {
   id: number;
   name: string;
-  size: string;
   color: string;
+  size: string;
   price: number;
+  created_at: Date;
 }
 
-interface Cart extends RowDataPacket {
-  id: number;
+// Clase para gestionar la tabla `shirts`
+class ShirtModel {
+  constructor() {
+    this.init();
+  }
+
+  // Método para crear la tabla si no existe, con reintentos
+  async init(retries = 5, delay = 2000) {
+    const createTableQuery = `
+      CREATE TABLE IF NOT EXISTS shirts (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        color VARCHAR(50),
+        size VARCHAR(5),
+        price DECIMAL(10, 2),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
+
+    for (let i = 0; i < retries; i++) {
+      try {
+        await pool.query(createTableQuery);
+        console.log("Tabla 'shirts' verificada o creada exitosamente.");
+        break; // Salir del bucle si se crea exitosamente
+      } catch (error) {
+        console.error(`Error al crear la tabla 'shirts':`, error);
+        if (i < retries - 1) {
+          console.log(`Reintentando en ${delay / 1000} segundos...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+        } else {
+          console.error("No se pudo crear la tabla después de varios intentos.");
+        }
+      }
+    }
+  }
+
+  // Método para añadir una nueva remera
+  async addShirt(name: string, color: string, size: string, price: number): Promise<number> {
+    const insertQuery = 'INSERT INTO shirts (name, color, size, price) VALUES (?, ?, ?, ?)';
+    const [result] = await pool.query(insertQuery, [name, color, size, price]);
+    return (result as any).insertId;
+  }
+
+  // Método para obtener todas las remeras
+  async getAllShirts(): Promise<Shirt[]> {
+    const [rows] = await pool.query<Shirt[]>('SELECT * FROM shirts');
+    return rows;
+  }
+
+  // Método para obtener una remera por ID
+  async getShirtById(id: number): Promise<Shirt | null> {
+    const [rows] = await pool.query<Shirt[]>('SELECT * FROM shirts WHERE id = ?', [id]);
+    return rows.length > 0 ? rows[0] : null;
+  }
 }
 
-interface CartItem extends RowDataPacket {
-  id: number;
-  cartId: number;
-  productId: number;
-  productName: string;
-  price: number;
-  quantity: number;
-}
-
-// Funciones para Usuarios
-export const createUser = async (username: string, password: string): Promise<number> => {
-  const [result] = await pool.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, password]);
-  return (result as any).insertId;
-};
-
-export const getUserByUsername = async (username: string): Promise<User | null> => {
-  const [rows] = await pool.query<User[]>('SELECT * FROM users WHERE username = ?', [username]);
-  return rows.length > 0 ? rows[0] : null;
-};
-
-// Funciones para Shorts
-export const getAllShorts = async (): Promise<Short[]> => {
-  const [rows] = await pool.query<Short[]>('SELECT * FROM shorts');
-  return rows;
-};
-
-export const getShortById = async (id: number): Promise<Short> => {
-  const [rows] = await pool.query<Short[]>('SELECT * FROM shorts WHERE id = ?', [id]);
-  return rows[0];
-};
-
-// Funciones para Camperas
-export const getAllCamperas = async (): Promise<Campera[]> => {
-  const [rows] = await pool.query<Campera[]>('SELECT * FROM camperas');
-  return rows;
-};
-
-export const getCamperaById = async (id: number): Promise<Campera> => {
-  const [rows] = await pool.query<Campera[]>('SELECT * FROM camperas WHERE id = ?', [id]);
-  return rows[0];
-};
-
-// Funciones para Shirts
-export const getAllShirts = async (): Promise<Shirt[]> => {
-  const [rows] = await pool.query<Shirt[]>('SELECT * FROM shirts');
-  return rows;
-};
-
-export const getShirtById = async (id: number): Promise<Shirt> => {
-  const [rows] = await pool.query<Shirt[]>('SELECT * FROM shirts WHERE id = ?', [id]);
-  return rows[0];
-};
-
-// Funciones para Carrito
-export const createCart = async (): Promise<number> => {
-  const [result] = await pool.query('INSERT INTO carts () VALUES ()');
-  return (result as any).insertId;
-};
-
-export const getCartById = async (id: number): Promise<Cart> => {
-  const [rows] = await pool.query<Cart[]>('SELECT * FROM carts WHERE id = ?', [id]);
-  return rows[0];
-};
-
-export const getCartItemsByCartId = async (cartId: number): Promise<CartItem[]> => {
-  const [rows] = await pool.query<CartItem[]>('SELECT * FROM cart_items WHERE cartId = ?', [cartId]);
-  return rows;
-};
-
-export const addItemToCart = async (cartId: number, productId: number, productName: string, price: number, quantity: number): Promise<number> => {
-  const [result] = await pool.query('INSERT INTO cart_items (cartId, productId, productName, price, quantity) VALUES (?, ?, ?, ?, ?)', [cartId, productId, productName, price, quantity]);
-  return (result as any).insertId;
-};
+// Exporta una instancia de la clase para usarla en otras partes del código
+export const shirtModel = new ShirtModel();
