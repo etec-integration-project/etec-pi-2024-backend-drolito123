@@ -1,14 +1,18 @@
 import express from 'express';
-import path from 'path';
-import shirtRoutes from './routes/shirtRoutes';
+import cors from 'cors';
+const { initializeDatabase } = require('./database');
+const shirtsRoutes = require('./routes/shirtsRoutes');
 
 const app = express();
-const port = 3000;
 
+app.use(cors());
 app.use(express.json());
-app.use('/public', express.static(path.join(__dirname, '../public')));
-app.use('/shirts', shirtRoutes);
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+app.use('/api', shirtsRoutes);
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, async () => {
+  console.log(`Server running on port ${PORT}`);
+  await initializeDatabase();
 });

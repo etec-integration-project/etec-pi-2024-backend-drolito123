@@ -1,20 +1,20 @@
-# Usa una imagen base de Node.js
-FROM node:20-alpine
+# Utilizar la imagen base de Node.js
+FROM node:14
 
-# Crear el directorio de trabajo
+# Crear y configurar el directorio de trabajo
 WORKDIR /app
 
-# Copiar package.json y package-lock.json
+# Copiar los archivos de package.json y package-lock.json
 COPY package*.json ./
 
 # Instalar las dependencias
-RUN npm install && npm install mysql
+RUN npm install
 
-# Copiar el código fuente de la aplicación
+# Copiar el resto de los archivos
 COPY . .
 
-# Exponer el puerto
+# Exponer el puerto de la aplicación
 EXPOSE 3000
 
-# Comando para iniciar la aplicación usando ts-node
-CMD ["npx", "ts-node", "src/app.ts"]
+# Comando para ejecutar la aplicación
+CMD ["node", "src/app.js"]
