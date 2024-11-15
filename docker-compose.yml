@@ -1,30 +1,33 @@
-version: '3.8'
+version: "3"
 
 services:
-  mysql:
-    image: mysql:5.7
-    container_name: etec-pi-2024-backend-drolito123-mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: shirtdb
-    ports:
-      - "3307:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-
   backend:
-    build:
-      context: .
+    build: .
+    container_name: backend
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
-      DATABASE_HOST: mysql_container
-      DATABASE_USER: root
-      DATABASE_PASSWORD: root
-      DATABASE_NAME: shirtdb
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=123456
+      - DB_NAME=DB
     depends_on:
-      - mysql
-    command: sh -c "sleep 10 && npx ts-node src/app.ts"  # Añade un retraso de 10 segundos
+      - db
+    networks:
+      - santos-app-network
 
-volumes:
-  mysql_data:
+  db:
+    image: mysql:8.0
+    container_name: db
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=DB
+    ports:
+      - "3307:3306"  # Puerto expuesto en tu máquina
+    restart: always
+    networks:
+      - santos-app-network
+
+networks:
+  santos-app-network:
+    external: true
