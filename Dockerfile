@@ -1,20 +1,22 @@
-# Utilizar la imagen base de Node.js
 FROM node:14
 
-# Crear y configurar el directorio de trabajo
+# Establece el directorio de trabajo
 WORKDIR /app
 
-# Copiar los archivos de package.json y package-lock.json
+# Copia los archivos necesarios
 COPY package*.json ./
 
-# Instalar las dependencias
+# Instala las dependencias
 RUN npm install
 
-# Copiar el resto de los archivos
+# Instala TypeScript globalmente
+RUN npm install -g typescript
+
+# Copia el resto del código fuente
 COPY . .
 
-# Exponer el puerto de la aplicación
-EXPOSE 3000
+# Compila TypeScript
+RUN tsc
 
-# Comando para ejecutar la aplicación
-CMD ["node", "src/app.ts"]
+# Arranca el servidor usando el archivo compilado
+CMD ["node", "dist/app.js"]
