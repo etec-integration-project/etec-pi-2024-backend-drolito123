@@ -19,4 +19,5 @@ COPY . .
 RUN tsc
 
 # Arranca el servidor usando el archivo compilado
-CMD ["node", "dist/app.js"]
+CMD ["node", "src/app.js"]
+
