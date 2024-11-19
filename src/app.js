@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { initializeDatabase } from './database';
+import { initializeDatabase } from './database/index.js';
 import {router} from './routes/shirtsRoutes.js';
 
 const app = express();
