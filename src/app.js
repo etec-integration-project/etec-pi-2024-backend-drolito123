@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { initializeDatabase } from './database/index.js';
-import {router} from './routes/shirtsRoutes.js';
+import {router} from './route/shirtRoute.js';
 
 const app = express();
 
