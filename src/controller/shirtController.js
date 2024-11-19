@@ -1,4 +1,3 @@
-import { Request, Response } from 'express';
 import {pool} from '../database/index.js'
 
 export const getShirts = async (req, res) => {
