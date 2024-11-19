@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import {pool} from '../database/index'
+import {pool} from '../database/index.js'
 
-export const getShirts = async (req: Request, res: Response): Promise<void> => {
+export const getShirts = async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT * FROM shirts");
     res.json(rows);
@@ -10,10 +10,10 @@ export const getShirts = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export const addShirt = async (req: Request, res: Response): Promise<void> => {
+export const addShirt = async (req, res) => {
     const { name, description, price, imageUrl } = req.body;
     try {
-      const [result] = await pool.query<import('mysql2').OkPacket>(
+      const [result] = await pool.query(
         "INSERT INTO shirts (name, description, price, imageUrl) VALUES (?, ?, ?, ?)",
         [name, description, price, imageUrl]
       );

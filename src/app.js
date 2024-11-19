@@ -1,14 +1,14 @@
 import express from 'express';
 import cors from 'cors';
-const { initializeDatabase } = require('./database');
-const shirtsRoutes = require('./routes/shirtsRoutes');
+import { initializeDatabase } from './database';
+import {router} from './routes/shirtsRoutes.js';
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.use('/api', shirtsRoutes);
+app.use('/api', router);
 
 const PORT = process.env.PORT || 3000;
 

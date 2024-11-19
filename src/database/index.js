@@ -11,7 +11,7 @@ const pool = createPool({
   database: process.env.DB_NAME,
 });
 
-export const initializeDatabase = async (): Promise<void> => {
+export const initializeDatabase = async () => {
   try {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS shirts (

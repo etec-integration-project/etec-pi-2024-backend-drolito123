@@ -6,4 +6,4 @@ const router = Router();
 router.get('/shirts', getShirts);
 router.post('/shirts', addShirt);
 
-export default router;
+export {router}
