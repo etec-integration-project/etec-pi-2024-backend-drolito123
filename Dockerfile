@@ -12,6 +12,8 @@ RUN npm install
 # Copia el resto del código fuente
 COPY . .
 
+EXPOSE 3001
+
 # Arranca el servidor usando el archivo compilado
 CMD ["node", "src/app.js"]
 
