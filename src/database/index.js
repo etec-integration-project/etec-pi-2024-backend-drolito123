@@ -3,7 +3,6 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-
 const pool = createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -13,6 +12,7 @@ const pool = createPool({
 
 export const initializeDatabase = async () => {
   try {
+    // Crear tabla "shirts"
     await pool.query(`
       CREATE TABLE IF NOT EXISTS shirts (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -22,6 +22,17 @@ export const initializeDatabase = async () => {
         imageUrl VARCHAR(255)
       );
     `);
+
+    // Crear tabla "users"
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(255) NOT NULL UNIQUE,
+        email VARCHAR(255) NOT NULL UNIQUE,
+        password VARCHAR(255) NOT NULL
+      );
+    `);
+
     console.log("Database and tables initialized");
   } catch (error) {
     console.error("Error initializing database:", error);
