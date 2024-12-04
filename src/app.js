@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { initializeDatabase } from './database/index.js';
-import router from './route/routes.js'; // Nota: Usa el archivo de rutas combinado
+import router from './route/Route.js'; // Nota: Usa el archivo de rutas combinado
 
 const app = express();
 
