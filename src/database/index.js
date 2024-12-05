@@ -35,6 +35,13 @@ export const initializeDatabase = async () => {
         password VARCHAR(255) NOT NULL
       );
     `);
+    await pool.query( `
+      CREATE TABLE IF NOT EXISTS cart (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          userID INT NOT NULL,
+          cartContent VARCHAR(1024) NOT NULL
+      );
+  `);
 
     console.log("Database and tables initialized");
   } catch (error) {
