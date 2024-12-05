@@ -1,8 +1,10 @@
 import { createPool } from 'mysql2/promise';
 import * as dotenv from 'dotenv';
 
+// Cargar las variables de entorno
 dotenv.config();
 
+// Configuración de la conexión a la base de datos
 const pool = createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -10,6 +12,7 @@ const pool = createPool({
   database: process.env.DB_NAME,
 });
 
+// Inicialización de la base de datos
 export const initializeDatabase = async () => {
   try {
     // Crear tabla "shirts"
