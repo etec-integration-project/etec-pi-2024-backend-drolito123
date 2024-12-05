@@ -5,12 +5,12 @@ const router = express.Router();
 let cart = [];
 
 // Obtener el carrito
-router.get("/", (req, res) => {
+const getCart = (req, res) => {
     res.json(cart);
-});
+};
 
 // Agregar un producto al carrito
-router.post("/add", (req, res) => {
+const addToCart = (req, res) => {
     const { id, name, price, quantity } = req.body;
 
     // Verificar si el producto ya existe en el carrito
@@ -25,10 +25,10 @@ router.post("/add", (req, res) => {
     }
 
     res.json(cart);
-});
+};
 
 // Actualizar la cantidad de un producto en el carrito
-router.put("/update/:id", (req, res) => {
+const updateCartItem = (req, res) => {
     const { id } = req.params;
     const { quantity } = req.body;
 
@@ -46,13 +46,13 @@ router.put("/update/:id", (req, res) => {
     } else {
         res.status(404).json({ message: "Producto no encontrado en el carrito" });
     }
-});
+};
 
 // Vaciar el carrito
-router.delete("/clear", (req, res) => {
+const clearCart = (req, res) => {
     cart = [];
     res.json({ message: "Carrito vaciado", cart });
-});
+};
 
-// Exportar las rutas del carrito
-module.exports = router;
+// Exportar las funciones individualmente
+export { getCart, addToCart, updateCartItem, clearCart };

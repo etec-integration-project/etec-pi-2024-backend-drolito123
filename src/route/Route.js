@@ -20,4 +20,3 @@ router.put('/cart/update/:id', updateCartItem);
 router.delete('/cart/clear', clearCart);
 
 export default router;
-
