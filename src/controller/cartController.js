@@ -1,4 +1,4 @@
-import { pool } from '../index.js';
+import {pool} from '../database/index.js'
 
 export const buyCart = async (req, res) => {
     
