@@ -5,12 +5,12 @@ const router = express.Router();
 let cart = [];
 
 // Obtener el carrito
-const getCart = (req, res) => {
+export const getCart = (req, res) => {
     res.json(cart);
 };
 
 // Agregar un producto al carrito
-const addToCart = (req, res) => {
+export const addToCart = (req, res) => {
     const { id, name, price, quantity } = req.body;
 
     // Verificar si el producto ya existe en el carrito
@@ -28,14 +28,13 @@ const addToCart = (req, res) => {
 };
 
 // Actualizar la cantidad de un producto en el carrito
-const updateCartItem = (req, res) => {
+export const updateCartItem = (req, res) => {
     const { id } = req.params;
     const { quantity } = req.body;
 
     const product = cart.find((item) => item.id === parseInt(id));
 
     if (product) {
-        // Si la cantidad es mayor a 0, actualiza
         if (quantity > 0) {
             product.quantity = quantity;
         } else {
@@ -49,7 +48,7 @@ const updateCartItem = (req, res) => {
 };
 
 // Vaciar el carrito
-const clearCart = (req, res) => {
+export const clearCart = (req, res) => {
     cart = [];
     res.json({ message: "Carrito vaciado", cart });
 };
