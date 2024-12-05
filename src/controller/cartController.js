@@ -1,6 +1,3 @@
-const express = require("express");
-const router = express.Router();
-
 // Carrito en memoria (simulación)
 let cart = [];
 
@@ -52,6 +49,3 @@ export const clearCart = (req, res) => {
     cart = [];
     res.json({ message: "Carrito vaciado", cart });
 };
-
-// Exportar las funciones individualmente
-export { getCart, addToCart, updateCartItem, clearCart };
