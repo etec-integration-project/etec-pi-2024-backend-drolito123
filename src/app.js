@@ -9,7 +9,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:3000', // Cambia esto al dominio de tu frontend
+  origin: '*', // Cambia esto al dominio de tu frontend
   credentials: true, // Permitir cookies en las solicitudes
 }));
 app.use(express.json());
@@ -17,14 +17,23 @@ app.use(cookieParser());
 
 // Middleware para autenticación persistente
 const authenticateToken = (req, res, next) => {
-  const token = req.cookies.authToken; // Leer token de las cookies
-  if (!token) return res.status(401).json({ message: 'No autenticado' });
+  const token = req.cookies['pensado-app']; // Leer token de las cookies
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+  console.log(token);
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (!decoded) return res.status(401).json({ message: 'No autenticado' });
+
+  try {
+    console.log(decoded);
+    req.user = { id: decoded.id, username: decoded.username };
+    next();
+  } catch (error) {
     if (err) return res.status(403).json({ message: 'Token no válido' });
     req.user = user; // Guardar la información del usuario
     next();
-  });
+  }
 };
 
 // Rutas públicas

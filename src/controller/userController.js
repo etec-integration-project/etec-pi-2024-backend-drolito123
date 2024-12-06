@@ -1,5 +1,6 @@
 import { pool } from '../database/index.js';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 // Registro de usuario
 export const registerUser = async (req, res) => {
@@ -50,9 +51,18 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Credenciales inválidas" });
     }
 
-    res.status(200).json({ message: "Inicio de sesión exitoso", userId: user.id, username: user.username });
+    const token = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '24h' });
+    res.cookie('pensado-app', token);
+    res.cookie('username', user.username, { httpOnly: false });
+
+    res.status(200).json({ message: "Inicio de sesión exitoso" });
   } catch (error) {
     console.error("Error al iniciar sesión:", error);
     res.status(500).json({ message: "Error interno del servidor" });
   }
 };
+
+export const logout = async (req, res) => {
+  res.clearCookie('pensado-app');
+  return res.json({ message: 'Sesión cerrada exitosamente' });
+}
