@@ -7,13 +7,8 @@ import { buyCart } from '../controller/cartController.js';
 const router = Router();
 
 
-router.route('/shirts/:id', getShirtsId).get((request, response) => {
-    Db.getOrder(request.params.id).then((data) => {
-      response.json(data[0]);
-    })
-  })
-
 // Rutas para shirts
+router.get('/shirts/:id', getShirtsId);
 router.get('/shirts', getShirts);
 router.post('/shirts', addShirt);
 
