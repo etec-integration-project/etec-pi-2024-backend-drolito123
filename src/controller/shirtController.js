@@ -22,3 +22,12 @@ export const addShirt = async (req, res) => {
       res.status(500).json({ error: "Error adding shirt" });
     }
   };
+
+  export const getShirtsId = async (req, res) => {
+    try {
+      const [rows] = await pool.query("SELECT name FROM shirts");
+      res.json(rows);
+    } catch (error) {
+      res.status(500).json({ error: "Error fetching shirts" });
+    }
+  };
