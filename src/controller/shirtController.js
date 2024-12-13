@@ -25,7 +25,7 @@ export const addShirt = async (req, res) => {
 
   export const getShirtsId = async (req, res) => {
     try {
-      const [rows] = await pool.query("SELECT name FROM shirts");
+      const [rows] = await pool.query("SELECT * FROM shirts");
       res.json(rows);
     } catch (error) {
       res.status(500).json({ error: "Error fetching shirts" });

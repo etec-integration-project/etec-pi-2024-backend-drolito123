@@ -8,7 +8,7 @@ const router = Router();
 
 // Rutas para shirts
 router.get('/shirts', getShirts);
-router.get('/shirts/name', getShirtsId);
+router.get('/shirts/:name', getShirtsId);
 router.post('/shirts', addShirt);
 
 // Rutas para users
